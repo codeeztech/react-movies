@@ -19,7 +19,7 @@ export default function EditGenre() {
          axios.get(`${urlGenres}/${id}`).then((response: AxiosResponse<genreCreationDTO>) => {
              setGenre(response.data);
         });
-        
+
     }, [id]);
 
     async function edit(genreToEdit: genreCreationDTO) {
@@ -27,11 +27,13 @@ export default function EditGenre() {
             await axios.put(`${urlGenres}/${id}`, genreToEdit);
             history.push('/genres');
         } catch (error) {
-            // if (error && error.response)
-            //     setErrors(error.response.data);
+            if (error && error.response)
+                setErrors(error.response.data);
         }
 
     }
+
+    
 
 
     return (
