@@ -5,51 +5,20 @@ import { urlGenres } from "../endpoints";
 import DisplayErrors from "../utils/DisplayErrors";
 import Loading from '../utils/Loading';
 import GenreForm from './GenreForm'
-import { genreCreationDTO } from "./genres.model";
+import { genreCreationDTO, genreDTO } from "./genres.model";
+import EditEntity from '../utils/EditEntity';
 
 export default function EditGenre() {
 
-    const { id }: any = useParams();
-    const [genre, setGenre] = useState<genreCreationDTO>();
-    const [errors, setErrors] = useState<string[]>([]);
-    var history = useHistory();
-
-    useEffect(() => {
-
-         axios.get(`${urlGenres}/${id}`).then((response: AxiosResponse<genreCreationDTO>) => {
-             setGenre(response.data);
-        });
-
-    }, [id]);
-
-    async function edit(genreToEdit: genreCreationDTO) {
-        try {
-            await axios.put(`${urlGenres}/${id}`, genreToEdit);
-            history.push('/genres');
-        } catch (error) {
-            if (error && error.response)
-                setErrors(error.response.data);
-        }
-
-    }
-
-    
 
 
     return (
         <>
-            <h3>Edit Genre</h3>
-            
-            <DisplayErrors errors={errors}></DisplayErrors>
-
-            {
-                genre ? <GenreForm model={genre}
-                    onSubmit={async value => {
-                        // when the form is posted
-                        await edit(value);
-                    }}
-                /> : <Loading></Loading>
-            }
+            <EditEntity<genreCreationDTO, genreDTO> url={urlGenres} entityName="Genres" indexURL="/Genres" >
+                {(entity, edit) => 
+                        <GenreForm model={entity} onSubmit={async value => { await edit(value) }}></GenreForm>
+                }
+            </EditEntity>
         </>
     )
 }
